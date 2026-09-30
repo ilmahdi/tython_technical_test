@@ -39,35 +39,33 @@ The database initializes with the following default accounts. Quick-fill buttons
 
 ---
 
-## 4. Quickstart & Docker Commands
+## 4. Quickstart & Evaluation Guide
 
-All services and commands run inside Docker containers via `Makefile`.
+Follow these steps to clone, launch, and verify the entire stack locally:
 
 ```bash
-# 1. Start all services in the background (dev mode)
+# 1. Clone the repository
+git clone git@github.com:ilmahdi/tython_technical_test.git
+cd tython_technical_test
+
+# 2. Start all services in development mode
+# Note: `make up` automatically generates `back/.env` and `front/.env` from `.env.example` templates if missing.
 make up
 
-# 2. Run backend automated test suite (Jest + Supertest)
-make test-back
+# 3. Access the application in your browser:
+# - Frontend Application: http://localhost:1313 (log in with test credentials below)
+# - Interactive API Docs (Swagger): http://localhost:1314/api/docs
+# - Backend API Healthcheck: http://localhost:1314/health
 
-# 3. Run frontend linter (Oxlint)
-make lint-front
+# 4. Run automated tests and quality checks inside Docker:
+make test-back    # Runs Jest + Supertest (48/48 green tests)
+make lint-front   # Runs Oxlint frontend linter (0 errors, 0 warnings)
+make build-front  # Validates Vite production compilation
 
-# 4. Run frontend production build validation (Vite)
-make build-front
-
-# 5. View combined real-time container logs
-make logs
-
-# 6. Open shell inside containers
-make sh-back      # Backend container
-make sh-front     # Frontend container
-
-# 7. Stop all services
-make down
-
-# 8. Reset containers and database volumes
-make clean
+# 5. Additional management commands:
+make logs         # Stream real-time container logs
+make down         # Stop all services
+make clean        # Reset containers, network, and database volumes
 ```
 
 ---

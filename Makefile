@@ -14,20 +14,25 @@ BACK_SERVICE = app-back
         logs-front logs-back sh-front sh-back clean prune help \
         test-back lint-front build-front
 
+# Ensure local environment files exist from templates if missing
+setup-env:
+	@if [ ! -f back/.env ] && [ -f back/.env.example ]; then cp back/.env.example back/.env; echo "Created back/.env from template"; fi
+	@if [ ! -f front/.env ] && [ -f front/.env.example ]; then cp front/.env.example front/.env; echo "Created front/.env from template"; fi
+
 # Build all services defined in the docker-compose.yml file
-build:
+build: setup-env
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) build
 
 # Start all services without rebuilding them in dev mode
-up:
+up: setup-env
 	DEV_MODE_APP=true $(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d
 
 # Start all services without rebuilding them in prod mode
-up-prod:
+up-prod: setup-env
 	BUILD_FRONT_APP=false BUILD_BACK_APP=false $(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d
 
 # Start all services with rebuild options (rebuild front-end and back-end)
-up-build-prod:
+up-build-prod: setup-env
 	BUILD_FRONT_APP=true BUILD_BACK_APP=true $(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) up -d
 
 # Stop all services and remove the associated containers
