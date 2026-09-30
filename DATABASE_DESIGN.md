@@ -14,6 +14,8 @@ erDiagram
     USERS ||--o{ APPOINTMENTS : "creates (1-to-many)"
     PATIENTS ||--o{ APPOINTMENTS : "books / attends (1-to-many)"
 
+    USERS ||--o{ AUDIT_LOGS : "performed_by (1-to-many)"
+
     USERS {
         uuid id PK "DEFAULT gen_random_uuid()"
         varchar name "NOT NULL"
@@ -44,11 +46,25 @@ erDiagram
         uuid created_by FK "REFERENCES users(id) ON DELETE RESTRICT"
         timestamptz created_at "DEFAULT CURRENT_TIMESTAMP"
     }
+
+    AUDIT_LOGS {
+        uuid id PK "DEFAULT gen_random_uuid()"
+        varchar entity_name "NOT NULL"
+        uuid entity_id "NOT NULL"
+        varchar action "CHECK ('CREATE', 'UPDATE', 'DELETE', 'STATUS_CHANGE')"
+        uuid performed_by FK "REFERENCES users(id) ON DELETE RESTRICT"
+        jsonb details "NULLABLE"
+        timestamptz created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
 ```
 
 ---
 
-## 3. Relationship Justification
+## 3. Relationship Justification (1-1, 1-N, N-N)
+
+### 1-to-1 (`1:1`) Consideration & Design Choice
+* **Analysis**: A 1:1 relationship (such as splitting patient demographics into `patients` and a separate `patient_profiles` table, or separating authentication into a `credentials` table) was evaluated.
+* **Justification**: For the operational requirements of ClinicFlow, consolidating core patient demographics (`full_name`, `cin`, `phone`, `birth_date`, `address`) directly within the `patients` table avoids unnecessary JOIN overhead, guarantees atomic single-statement writes, and adheres strictly to Third Normal Form (3NF). If granular medical history (e.g. detailed clinical notes, biometric charts) is added in future iterations, a dedicated 1:1 extension table can be linked via `patient_id UUID UNIQUE REFERENCES patients(id)`.
 
 ### 1-to-Many (`1:N`): Users → Appointments
 * **Semantics**: One clinic staff member or administrator creates/schedules multiple appointments (`created_by`).
@@ -68,7 +84,7 @@ erDiagram
 
 ---
 
-## 4. Constraints & Data Integrity
+## 4. Constraints & Data Integrity (Including Bonus Criteria)
 
 1. **UUID Primary Keys**:
    - Generated natively via PostgreSQL `gen_random_uuid()`. Prevents ID enumeration attacks and enables distributed ID generation.
@@ -77,8 +93,10 @@ erDiagram
 3. **Domain Integrity via `CHECK` Constraints**:
    - `users.role` restricted to `admin` or `staff`.
    - `appointments.status` restricted to `pending`, `confirmed`, or `cancelled`.
-4. **Soft Deletion (`deleted_at`)**:
+4. **Soft Deletion (`deleted_at`) [Bonus]**:
    - Included in `patients` table to safely retire patient profiles while maintaining foreign key integrity with historical appointments.
+5. **Audit Trail Table (`audit_logs`) [Bonus]**:
+   - Tracks operational actions (`CREATE`, `UPDATE`, `DELETE`, `STATUS_CHANGE`) linked to the acting user (`performed_by`) and target entity.
 
 ---
 
