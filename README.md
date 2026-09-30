@@ -44,6 +44,15 @@ make down         # Stop all services
 make clean        # Reset containers, network, and database volumes
 ```
 
+### Pre-Seeded Test Credentials
+The database automatically seeds with the following default accounts. Quick-fill buttons are also provided on the `/login` page for 1-click form population:
+
+| Role | Name | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin** | Admin Director | `admin@clinicflow.local` | `Admin123!` | Full clinic access + **Patient Deletion** (`DELETE /api/patients/:id`) |
+| **Staff** | Dr. Sarah Smith | `dr.sarah@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
+| **Staff** | Nurse John Doe | `nurse.john@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
+
 ---
 
 ## 2. Deliverables Matrix
@@ -69,19 +78,7 @@ make clean        # Reset containers, network, and database volumes
 
 ---
 
-## 4. Pre-Seeded Accounts
-
-The database initializes with the following default accounts. Quick-fill buttons are also available on the `/login` page for fast testing:
-
-| Role | Name | Email | Password | Permissions |
-| :--- | :--- | :--- | :--- | :--- |
-| **Admin** | Admin Director | `admin@clinicflow.local` | `Admin123!` | Full clinic access + **Patient Deletion** (`DELETE /api/patients/:id`) |
-| **Staff** | Dr. Sarah Smith | `dr.sarah@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
-| **Staff** | Nurse John Doe | `nurse.john@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
-
----
-
-## 5. Environment Configuration
+## 4. Environment Configuration
 
 ### Backend (`back/.env` / `back/.env.example`)
 ```env
@@ -105,9 +102,9 @@ VITE_API_URL=/api
 
 ---
 
-## 6. Architecture & Mandatory Business Rules
+## 5. Architecture & Mandatory Business Rules
 
-### 6.1 Backend Layered Architecture
+### 5.1 Backend Layered Architecture
 ```
 HTTP Requests
      │
@@ -127,7 +124,7 @@ repositories/      ── Parameterized SQL queries ($1, $2) via pg pool
 PostgreSQL 16
 ```
 
-### 6.2 The 30-Minute Conflict Engine
+### 5.2 The 30-Minute Conflict Engine
 * **Rule**: A patient cannot have two `confirmed` appointments within a 30-minute window ($|t_{\text{new}} - t_{\text{existing}}| < 30 \text{ minutes}$).
 * **Enforcement**:
   * Applies **only to confirmed appointments** (pending and cancelled appointments do not block).
@@ -135,18 +132,18 @@ PostgreSQL 16
   * **Concurrency-Safe**: Uses PostgreSQL database transactions with row-level locks (`SELECT id FROM patients WHERE id = $1 FOR UPDATE`) before checking time ranges, preventing race condition double-bookings.
   * Violations trigger an HTTP `409 Conflict` response with an explanatory message.
 
-### 6.3 Soft Delete & Admin Protection
+### 5.3 Soft Delete & Admin Protection
 * `DELETE /api/patients/:id` is strictly protected by role-based authorization (`authorize('admin')`).
 * Patient deletion uses soft delete (`deleted_at = CURRENT_TIMESTAMP`), preserving foreign key relationships and historical consultations.
 * Soft-deleted patients are automatically excluded from listing, search, dashboard metrics, and new appointment creation.
 
-### 6.4 Pagination & Search
+### 5.4 Pagination & Search
 * `GET /api/patients?search=&page=&limit=` performs database-level pagination using `LIMIT` and `OFFSET`.
 * Case-insensitive search runs across both `full_name` and `cin` using SQL `ILIKE`.
 
 ---
 
-## 7. REST API Endpoint Specification
+## 6. REST API Endpoint Specification
 
 > [!TIP]
 > **Interactive Swagger Documentation**: Explore and execute requests live at [http://localhost:1314/api/docs](http://localhost:1314/api/docs) (or inspect the raw OpenAPI spec at `/api/docs.json`).
@@ -180,7 +177,7 @@ PostgreSQL 16
 
 ---
 
-## 8. Frontend UI Highlights
+## 7. Frontend UI Highlights
 
 The frontend is constructed with **React 19**, **Vite**, **Tailwind CSS v4**, Lucide icons, and custom reusable UI components (`button`, `card`, `dialog`, `badge`, `input`, `table`):
 
@@ -192,7 +189,7 @@ The frontend is constructed with **React 19**, **Vite**, **Tailwind CSS v4**, Lu
 
 ---
 
-## 9. Verification & Automated Test Results
+## 8. Verification & Automated Test Results
 
 ### Backend Test Suite (`make test-back`)
 Passing with **48/48 tests (100% green)** across 5 test suites:
