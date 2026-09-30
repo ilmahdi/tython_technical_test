@@ -6,13 +6,20 @@ import { pool } from './config/db.js';
 import { config } from './config/env.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 
+import swaggerUi from 'swagger-ui-express';
+import { openApiSpec } from './docs/openapi.js';
+
 import apiRoutes from './routes/index.js';
 
 export const app = express();
 
 // Security and standard middlewares
 app.use(cors());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 if (config.nodeEnv !== 'test') {
   app.use(morgan('dev'));
 }
@@ -27,6 +34,10 @@ app.get('/health', async (_request, response) => {
     response.status(503).json({ status: 'degraded', database: 'unavailable' });
   }
 });
+
+// Swagger Interactive API Documentation
+app.get('/api/docs.json', (_req, res) => res.json(openApiSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 
 // API Routes (including /api/health and /api/auth)
 app.use('/api', apiRoutes);

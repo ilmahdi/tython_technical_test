@@ -22,6 +22,7 @@ ClinicFlow is a modern, production-ready PERN-stack (PostgreSQL, Express 5, Reac
 | :--- | :--- | :--- | :--- |
 | **Frontend UI** | [http://localhost:1313](http://localhost:1313) | `3000` | React 19 SPA with client-side routing & Vite proxy |
 | **Backend API** | [http://localhost:1314](http://localhost:1314) | `3000` | Express REST API (Health check: `/health`, `/api/health`) |
+| **Interactive API Docs (Swagger)** | [http://localhost:1314/api/docs](http://localhost:1314/api/docs) | `3000` | OpenAPI 3.0 Swagger UI & test console (`/api/docs.json`) |
 | **Database** | `localhost:5432` (internal) | `5432` | PostgreSQL 16 with UUID generation (`pgcrypto`) |
 
 ---
@@ -137,6 +138,9 @@ PostgreSQL 16
 ---
 
 ## 7. REST API Endpoint Specification
+
+> [!TIP]
+> **Interactive Swagger Documentation**: Explore and execute requests live at [http://localhost:1314/api/docs](http://localhost:1314/api/docs) (or inspect the raw OpenAPI spec at `/api/docs.json`).
 
 ### Authentication
 | Method | Endpoint | Auth | Role | Request Body | Description |
