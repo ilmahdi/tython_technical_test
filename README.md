@@ -4,43 +4,19 @@ ClinicFlow is a modern, production-ready PERN-stack (PostgreSQL, Express 5, Reac
 
 ---
 
-## 1. Deliverables Matrix
+## 1. Quickstart & Evaluation Guide
 
-| # | Deliverable | Description & Reference |
-| :--- | :--- | :--- |
-| **1.1** | **Conception DB (ERD)** | Complete ERD, relationship justifications, cascade rules, and index matrix in [DATABASE_DESIGN.md](./DATABASE_DESIGN.md). |
-| **1.2** | **Backend API** | Layered Node.js / Express 5 REST API (`routes` → `controllers` → `services` → `repositories`) with Zod validation. |
-| **1.3** | **Frontend UI** | Modern React 19 + Vite + Tailwind CSS v4 design system with Lucide icons. |
-| **1.4** | **Database & Migrations** | PostgreSQL 16 schema initialization and pre-seeded dataset in [`back/postgres-init/`](./back/postgres-init/). |
-| **1.5** | **Documentation & Setup** | This comprehensive guide including environment variables, Makefile commands, credentials, and API docs. |
+### Prerequisites
+Ensure the following tools are installed on your system before starting:
+- **Docker** (v20.10+ or Docker Desktop)
+- **Docker Compose** (v2+)
+- **Make** (standard Unix build utility)
+- **Git**
 
----
+> [!NOTE]
+> All application execution, node dependencies, database initialization, tests, and linting run **strictly inside Docker containers**. You do **not** need Node.js, npm, or PostgreSQL installed locally on your host machine.
 
-## 2. Application URLs & Ports
-
-| Service | Host URL | Container Port | Description |
-| :--- | :--- | :--- | :--- |
-| **Frontend UI** | [http://localhost:1313](http://localhost:1313) | `3000` | React 19 SPA with client-side routing & Vite proxy |
-| **Backend API** | [http://localhost:1314](http://localhost:1314) | `3000` | Express REST API (Health check: `/health`, `/api/health`) |
-| **Interactive API Docs (Swagger)** | [http://localhost:1314/api/docs](http://localhost:1314/api/docs) | `3000` | OpenAPI 3.0 Swagger UI & test console (`/api/docs.json`) |
-| **Database** | `localhost:5432` (internal) | `5432` | PostgreSQL 16 with UUID generation (`pgcrypto`) |
-
----
-
-## 3. Pre-Seeded Accounts
-
-The database initializes with the following default accounts. Quick-fill buttons are also available on the `/login` page for fast testing:
-
-| Role | Name | Email | Password | Permissions |
-| :--- | :--- | :--- | :--- | :--- |
-| **Admin** | Admin Director | `admin@clinicflow.local` | `Admin123!` | Full clinic access + **Patient Deletion** (`DELETE /api/patients/:id`) |
-| **Staff** | Dr. Sarah Smith | `dr.sarah@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
-| **Staff** | Nurse John Doe | `nurse.john@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
-
----
-
-## 4. Quickstart & Evaluation Guide
-
+### Launch Instructions
 Follow these steps to clone, launch, and verify the entire stack locally:
 
 ```bash
@@ -67,6 +43,41 @@ make logs         # Stream real-time container logs
 make down         # Stop all services
 make clean        # Reset containers, network, and database volumes
 ```
+
+---
+
+## 2. Deliverables Matrix
+
+| # | Deliverable | Description & Reference |
+| :--- | :--- | :--- |
+| **1.1** | **Conception DB (ERD)** | Complete ERD, relationship justifications, cascade rules, and index matrix in [DATABASE_DESIGN.md](./DATABASE_DESIGN.md). |
+| **1.2** | **Backend API** | Layered Node.js / Express 5 REST API (`routes` → `controllers` → `services` → `repositories`) with Zod validation. |
+| **1.3** | **Frontend UI** | Modern React 19 + Vite + Tailwind CSS v4 design system with Lucide icons. |
+| **1.4** | **Database & Migrations** | PostgreSQL 16 schema initialization and pre-seeded dataset in [`back/postgres-init/`](./back/postgres-init/). |
+| **1.5** | **Documentation & Setup** | This comprehensive guide including environment variables, Makefile commands, credentials, and API docs. |
+
+---
+
+## 3. Application URLs & Ports
+
+| Service | Host URL | Container Port | Description |
+| :--- | :--- | :--- | :--- |
+| **Frontend UI** | [http://localhost:1313](http://localhost:1313) | `3000` | React 19 SPA with client-side routing & Vite proxy |
+| **Backend API** | [http://localhost:1314](http://localhost:1314) | `3000` | Express REST API (Health check: `/health`, `/api/health`) |
+| **Interactive API Docs (Swagger)** | [http://localhost:1314/api/docs](http://localhost:1314/api/docs) | `3000` | OpenAPI 3.0 Swagger UI & test console (`/api/docs.json`) |
+| **Database** | `localhost:5432` (internal) | `5432` | PostgreSQL 16 with UUID generation (`pgcrypto`) |
+
+---
+
+## 4. Pre-Seeded Accounts
+
+The database initializes with the following default accounts. Quick-fill buttons are also available on the `/login` page for fast testing:
+
+| Role | Name | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin** | Admin Director | `admin@clinicflow.local` | `Admin123!` | Full clinic access + **Patient Deletion** (`DELETE /api/patients/:id`) |
+| **Staff** | Dr. Sarah Smith | `dr.sarah@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
+| **Staff** | Nurse John Doe | `nurse.john@clinicflow.local` | `Staff123!` | View/Create/Edit patients & appointments |
 
 ---
 
