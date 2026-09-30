@@ -38,6 +38,9 @@ export default function Login() {
     setError('');
   };
 
+  const searchParams = new URLSearchParams(location.search);
+  const isExpired = searchParams.get('expired') === 'true';
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center px-4 py-12">
       <div className="w-full max-w-md">
@@ -56,6 +59,13 @@ export default function Login() {
 
         {/* Card Form */}
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200/80 p-5 sm:p-8">
+          {isExpired && !error && (
+            <div className="mb-5 p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm flex items-start gap-2.5 animate-in fade-in">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className="flex-1">Your session has expired. Please sign in again.</div>
+            </div>
+          )}
+
           {error && (
             <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-start gap-2.5 animate-in fade-in">
               <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />

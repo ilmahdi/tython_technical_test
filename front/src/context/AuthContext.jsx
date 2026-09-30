@@ -22,6 +22,14 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    const handleExpired = () => {
+      clearAuth();
+    };
+    window.addEventListener('clinicflow:session-expired', handleExpired);
+    return () => window.removeEventListener('clinicflow:session-expired', handleExpired);
+  }, []);
+
+  useEffect(() => {
     let isMounted = true;
     const initAuth = async () => {
       const storedToken = localStorage.getItem('clinicflow_token');

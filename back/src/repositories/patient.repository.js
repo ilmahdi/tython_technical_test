@@ -30,7 +30,8 @@ export const findAll = async ({ search = '', page = 1, limit = 10 }) => {
   const params = [];
 
   if (search && search.trim() !== '') {
-    params.push(`%${search.trim()}%`);
+    const escapedSearch = search.trim().replace(/[%_\\]/g, '\\$&');
+    params.push(`%${escapedSearch}%`);
     conditions.push(`(full_name ILIKE $${params.length} OR cin ILIKE $${params.length})`);
   }
 

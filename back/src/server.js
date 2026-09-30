@@ -23,7 +23,7 @@ app.use(
 if (config.nodeEnv !== 'test') {
   app.use(morgan('dev'));
 }
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Base healthcheck for container health check
 app.get('/health', async (_request, response) => {

@@ -17,10 +17,17 @@ export async function request(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
   const response = await fetch(url, config);
 
-  // If unauthorized, clear token
+  // If unauthorized, clear token and handle session expiry redirect
   if (response.status === 401) {
+    const hadToken = Boolean(localStorage.getItem('clinicflow_token'));
     localStorage.removeItem('clinicflow_token');
     localStorage.removeItem('clinicflow_user');
+    if (hadToken && !endpoint.includes('/auth/login')) {
+      window.dispatchEvent(new Event('clinicflow:session-expired'));
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+        window.location.href = '/login?expired=true';
+      }
+    }
   }
 
   let data;
