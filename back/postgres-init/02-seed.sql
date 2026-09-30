@@ -34,3 +34,10 @@ INSERT INTO appointments (id, patient_id, appointment_date, status, reason, note
     ('aa999999-9999-9999-9999-999999999999', '55555555-5555-5555-5555-555555555555', CURRENT_TIMESTAMP + INTERVAL '30 minutes', 'pending', 'Orthopedic Knee Pain Check', 'Knee discomfort when walking', 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'),
     ('aa000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', CURRENT_TIMESTAMP + INTERVAL '5 days', 'confirmed', 'Follow-up X-Ray Analysis', 'Review MRI and X-ray results', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22')
 ON CONFLICT (id) DO NOTHING;
+
+-- 4. Insert Sample Audit Logs (Bonus Conception)
+INSERT INTO audit_logs (id, entity_name, entity_id, action, performed_by, details) VALUES
+    ('dd111111-1111-1111-1111-111111111111', 'patients', '11111111-1111-1111-1111-111111111111', 'CREATE', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '{"note": "Initial patient onboarding dossier created by Dr. Sarah Smith"}'),
+    ('dd222222-2222-2222-2222-222222222222', 'appointments', 'aa111111-1111-1111-1111-111111111111', 'STATUS_CHANGE', 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '{"old_status": "pending", "new_status": "confirmed", "reason": "Patient confirmed attendance"}')
+ON CONFLICT (id) DO NOTHING;
+
