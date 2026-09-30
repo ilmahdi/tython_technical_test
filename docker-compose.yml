@@ -1,0 +1,54 @@
+services:
+  app-front:
+    build: ./front
+    ports:
+      - "1313:3000"
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    env_file:
+      - ./front/.env
+    environment:
+      - DEV_MODE_APP
+    restart: on-failure
+    depends_on:
+      app-back:
+        condition: service_healthy
+
+  app-back:
+    build: ./back
+    ports:
+      - "1314:3000"
+    volumes:
+      - ./back:/app
+      - /app/node_modules
+    env_file:
+      - ./back/.env
+    environment:
+      - DEV_MODE_APP
+    restart: on-failure
+    depends_on:
+      app-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app-db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./back/postgres-init:/docker-entrypoint-initdb.d
+    env_file:
+      - ./back/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

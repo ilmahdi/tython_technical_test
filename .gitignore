@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+back/node_modules/
+front/node_modules/
+
+# Production build outputs
+dist/
+dist-ssr/
+front/dist/
+
+# Local Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+back/.env
+front/.env
+
+# Database volumes (if created locally outside named volume)
+postgres_data/
+
+# Logs & debuggers
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS & Editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
